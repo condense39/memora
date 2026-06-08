@@ -3,7 +3,7 @@
 
 Memora is a full-stack Next.js application designed to streamline event media sharing. It allows users to collaboratively upload hundreds of photos to private or public events, utilizes Google Cloud Vision to automatically categorize images, and leverages AWS Rekognition to instantly notify users when their face is detected in a new upload.
 
-![Memora Dashboard](public/favicon.ico) *(Replace with actual screenshot link later)*
+https://memora-henna-two.vercel.app/
 
 ---
 
