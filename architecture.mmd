@@ -1,0 +1,60 @@
+graph TD
+    %% Define Styles
+    classDef client fill:#3b82f6,stroke:#1e3a8a,stroke-width:2px,color:#fff
+    classDef frontend fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff
+    classDef backend fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff
+    classDef database fill:#8b5cf6,stroke:#5b21b6,stroke-width:2px,color:#fff
+    classDef storage fill:#ec4899,stroke:#be185d,stroke-width:2px,color:#fff
+    classDef ai fill:#ef4444,stroke:#b91c1c,stroke-width:2px,color:#fff
+    classDef realtime fill:#14b8a6,stroke:#0f766e,stroke-width:2px,color:#fff
+
+    subgraph "Client Tier"
+        A[User Browser / Device]:::client
+    end
+
+    subgraph "Application Tier (Next.js 14 App Router)"
+        B[Frontend / Server Components]:::frontend
+        C[API Routes / Server Actions]:::backend
+    end
+
+    subgraph "Data & Realtime Tier"
+        D[(MongoDB Atlas)]:::database
+        E[Pusher WebSockets]:::realtime
+    end
+
+    subgraph "AWS Infrastructure"
+        F[(AWS S3 Bucket)]:::storage
+        G[AWS Rekognition]:::ai
+    end
+
+    subgraph "Google Cloud"
+        H[Google Vision API]:::ai
+        I[Google OAuth 2.0]:::backend
+    end
+
+    %% Auth Flow
+    A -->|1. Sign in| B
+    B <-->|2. OAuth Callback| I
+
+    %% S3 Direct Upload Flow (Bypass Backend)
+    A -->|3. Request Presigned URL| C
+    C -->|4. Return Upload Token| A
+    A -->|5. Direct Upload PUT| F
+    
+    %% Save Media & Spawn Background Tasks
+    A -->|6. Save Final S3 URL| C
+    C -->|7. Store Document| D
+
+    %% AI Pipeline (Background)
+    C -.->|8. Async: Tag Image| H
+    H -.->|9. Return Labels| C
+    C -.->|10. Async: Recognize Faces| G
+    G -.->|11. Return Match Confidence| C
+
+    %% Realtime Notifications
+    C -->|12. Trigger Event| E
+    E -->|13. Real-time Notification| A
+
+    %% Read Operations
+    B -->|14. Query Media/Events| D
+    B -->|15. Read File| F
